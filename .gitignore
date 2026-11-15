@@ -9,3 +9,13 @@ __pycache__/
 !.env.example
 *.db
 .DS_Store
+
+# Temporary code backups
+*.backup-*
+
+# Python testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
