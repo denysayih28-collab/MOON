@@ -1,19 +1,12 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-
 type ApiRequestOptions = Omit<RequestInit, 'body'> & {
   body?: unknown
 }
 
-export async function apiFetch<T>(
+async function request<T>(
+  basePath: string,
   path: string,
   options: ApiRequestOptions = {},
 ): Promise<T> {
-  if (!API_BASE_URL) {
-    throw new Error(
-      'API_BASE_URL is not configured. Check your frontend environment variables.',
-    )
-  }
-
   const headers = new Headers(options.headers)
 
   if (options.body !== undefined) {
@@ -21,7 +14,7 @@ export async function apiFetch<T>(
   }
 
   const response = await fetch(
-    `${API_BASE_URL.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`,
+    `${basePath}/${path.replace(/^\/+/, '')}`,
     {
       ...options,
       headers,
@@ -46,3 +39,31 @@ export async function apiFetch<T>(
 
   return (await response.json()) as T
 }
+
+/**
+ * Backend principal : accès, profil, indicateurs,
+ * mesures et alertes générales.
+ */
+export function mainApiFetch<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<T> {
+  return request<T>('/main-api', path, options)
+}
+
+/**
+ * Backend Simulation : scénarios, simulations,
+ * règles et alertes issues du moteur de simulation.
+ */
+export function simulationApiFetch<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<T> {
+  return request<T>('/simulation-api', path, options)
+}
+
+/**
+ * Alias temporaire pour préserver les éventuels anciens appels.
+ * Les nouveaux appels devront choisir explicitement leur backend.
+ */
+export const apiFetch = mainApiFetch

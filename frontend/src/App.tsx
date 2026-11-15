@@ -1,6 +1,7 @@
 
 
 import type { AstronautProfile } from './types'
+import type { AstronautApiProfile } from './types/backend'
 import { demoAstronaut } from './data/demoAstronaut'
 
 import {
@@ -34,11 +35,13 @@ import {
 } from './data/demoData'
 
 import { anatomyInfo } from './data/anatomyInfo'
+import { SimulationLab } from './components/SimulationLab'
 
 type Page =
   | 'Dashboard'
   | 'Profile'
   | 'Body Explorer'
+  | 'Simulation Lab'
   | 'Measurements'
   | 'Alerts'
 
@@ -80,9 +83,12 @@ const navigation: { name: Page; icon: string }[] = [
   { name: 'Dashboard', icon: '▦' },
   { name: 'Profile', icon: '♙' },
   { name: 'Body Explorer', icon: '⌖' },
+  { name: 'Simulation Lab', icon: '◈' },
   { name: 'Measurements', icon: '⌁' },
   { name: 'Alerts', icon: 'bell' },
 ]
+
+type SelectedAstronaut = AstronautProfile | AstronautApiProfile
 
 function Sidebar({
   page,
@@ -91,8 +97,44 @@ function Sidebar({
 }: {
   page: Page
   onNavigate: (page: Page) => void
-  astronaut: AstronautProfile | null
+  astronaut: SelectedAstronaut | null
 }) {
+  const demoProfile =
+    astronaut !== null && 'identity' in astronaut ? astronaut : null
+
+  const apiProfile =
+    astronaut !== null && 'access_code' in astronaut ? astronaut : null
+
+  const fullName = demoProfile
+    ? demoProfile.identity.fullName
+    : apiProfile
+      ? `${apiProfile.first_name} ${apiProfile.last_name}`
+      : null
+
+  const missionName = astronaut?.mission.name ?? null
+
+  const missionDay = demoProfile
+    ? demoProfile.mission.missionDay
+    : apiProfile
+      ? apiProfile.mission_day
+      : null
+
+  const missionProgress = demoProfile
+    ? demoProfile.mission.progressPercent
+    : apiProfile &&
+        apiProfile.mission.planned_days > 0 &&
+        apiProfile.mission_day !== null
+      ? Math.min(
+          100,
+          Math.max(
+            0,
+            (apiProfile.mission_day / apiProfile.mission.planned_days) * 100,
+          ),
+        )
+      : null
+
+  const role = demoProfile ? demoProfile.identity.role : 'Astronaut'
+
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -146,42 +188,40 @@ function Sidebar({
       <div className="sidebar-bottom">
   <div className="mission-card">
     <div className="mission-orbit">◉</div>
-    <div className="mission-label">ACTIVE MISSION</div>
+    <div className="mission-label">
+      {demoProfile ? 'DEMO MISSION' : 'MISSION'}
+    </div>
 
     <div className="mission-name">
-      {astronaut?.mission.name ?? 'No active mission'}
+      {missionName ?? 'No mission assigned'}
     </div>
 
     <div className="mission-meta">
-      {astronaut ? (
-        <>
-          <span className="status-dot" />
-          Mission day{' '}
-          {String(astronaut.mission.missionDay).padStart(3, '0')}
-        </>
-      ) : (
-        'No astronaut selected'
-      )}
+      {missionDay !== null && missionDay !== undefined
+        ? `Mission day ${String(missionDay).padStart(3, '0')}`
+        : 'Mission day unavailable'}
     </div>
 
-    <div className="mission-progress">
-      <span
-        style={{
-          width: `${astronaut?.mission.progressPercent ?? 0}%`,
-        }}
-      />
-    </div>
+    {missionProgress !== null && (
+      <>
+        <div className="mission-progress">
+          <span style={{ width: `${missionProgress}%` }} />
+        </div>
 
-    <div className="mission-foot">
-      <span>MISSION PROGRESS</span>
-      <span>{astronaut?.mission.progressPercent ?? 0}%</span>
-    </div>
+        <div className="mission-foot">
+          <span>
+            {demoProfile ? 'MISSION PROGRESS' : 'ESTIMATED PROGRESS'}
+          </span>
+          <span>{Math.round(missionProgress)}%</span>
+        </div>
+      </>
+    )}
   </div>
 
   <div className="profile">
     <div className="profile-avatar">
-      {astronaut
-        ? astronaut.identity.fullName
+      {fullName
+        ? fullName
             .split(' ')
             .map((part) => part[0])
             .join('')
@@ -192,9 +232,9 @@ function Sidebar({
 
     <div className="profile-info">
       <strong>
-        {astronaut?.identity.fullName ?? 'No profile selected'}
+        {fullName ?? 'No profile selected'}
       </strong>
-      <span>{astronaut?.identity.role ?? 'Astronaut'}</span>
+      <span>{role}</span>
     </div>
 
     <span className="profile-menu">···</span>
@@ -474,8 +514,105 @@ function Dashboard() {
 function ProfilePage({
   astronaut,
 }: {
-  astronaut: AstronautProfile
+  astronaut: SelectedAstronaut
 }) {
+  if (!('identity' in astronaut)) {
+    const fullName = `${astronaut.first_name} ${astronaut.last_name}`.trim()
+
+    return (
+      <>
+        <section className="welcome-row">
+          <div>
+            <div className="eyebrow">
+              <span className="status-dot" /> CREW DATABASE / ASTRONAUT PROFILE
+            </div>
+
+            <h1>
+              Astronaut profile<span className="title-period">.</span>
+            </h1>
+
+            <p className="page-subtitle">
+              Profile information retrieved from the M.O.O.N. backend.
+            </p>
+          </div>
+
+          <span className="preview-badge">
+            BACKEND PROFILE
+          </span>
+        </section>
+
+        <section className="section-heading">
+          <div>
+            <span className="section-kicker">01 / IDENTIFICATION</span>
+            <h2>Identity</h2>
+          </div>
+        </section>
+
+        <section className="panel profile-panel">
+          <div className="profile-identity">
+            <div className="profile-large-avatar">
+              {fullName
+                .split(' ')
+                .map((part) => part[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase()}
+            </div>
+
+            <div>
+              <h2>{fullName}</h2>
+              <p>Astronaut</p>
+              <span className="source-tag">
+                ID: {astronaut.access_code}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section className="section-heading">
+          <div>
+            <span className="section-kicker">02 / FLIGHT RECORD</span>
+            <h2>Mission information</h2>
+          </div>
+        </section>
+
+        <section className="panel profile-panel">
+          <div className="panel-header">
+            <div>
+              <span className="section-kicker">ASSIGNED MISSION</span>
+              <h2>{astronaut.mission.name}</h2>
+            </div>
+
+            <span className="source-tag">BACKEND DATA</span>
+          </div>
+
+          <p className="page-subtitle">
+            {astronaut.mission.description || 'No mission description available.'}
+          </p>
+
+          <div className="profile-fields">
+            <div>
+              <span>PLANNED DURATION</span>
+              <strong>{astronaut.mission.planned_days} days</strong>
+            </div>
+
+            <div>
+              <span>START DATE</span>
+              <strong>{astronaut.mission.start_date.slice(0, 10)}</strong>
+            </div>
+
+            <div>
+              <span>CURRENT MISSION DAY</span>
+              <strong>
+                {astronaut.mission_day ?? 'Not available'}
+              </strong>
+            </div>
+          </div>
+        </section>
+      </>
+    )
+  }
+
   const { identity, physical, mission } = astronaut
 
   return (
@@ -1028,7 +1165,7 @@ function App() {
   const [isDemoPreview, setIsDemoPreview] = useState(false)
   const [page, setPage] = useState<Page>('Dashboard')
   const [selectedAstronaut, setSelectedAstronaut] =
-  useState<AstronautProfile | null>(null)
+    useState<SelectedAstronaut | null>(null)
 
   useEffect(() => {
     const handleNavigation = (event: Event) => {
@@ -1054,6 +1191,12 @@ function App() {
     return (
       <AstronautAccess
         onBack={() => setEntryStage('welcome')}
+        onAccess={(profile) => {
+          setSelectedAstronaut(profile)
+          setIsDemoPreview(false)
+          setPage('Dashboard')
+          setEntryStage('app')
+        }}
         onDemoPreview={() => {
           if (import.meta.env.DEV) {
             setSelectedAstronaut(demoAstronaut)
@@ -1127,6 +1270,7 @@ function App() {
               </section>
             ))}
           {page === 'Body Explorer' && <BodyExplorer />}
+          {page === 'Simulation Lab' && <SimulationLab />}
           {page === 'Measurements' && <MeasurementsPage />}
           {page === 'Alerts' && <AlertsPage />}
 

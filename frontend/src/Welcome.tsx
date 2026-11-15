@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import moonLogo from './assets/moon-logo.png'
 import './Welcome.css'
+import { mainApiFetch } from './services/api'
+import type { AstronautApiProfile } from './types/backend'
 
 type WelcomeProps = {
   onEnter: () => void
@@ -9,6 +11,7 @@ type WelcomeProps = {
 type AstronautAccessProps = {
   onBack: () => void
   onDemoPreview: () => void
+  onAccess: (profile: AstronautApiProfile) => void
 }
 
 export function Welcome({ onEnter }: WelcomeProps) {
@@ -71,21 +74,44 @@ export function Welcome({ onEnter }: WelcomeProps) {
 export function AstronautAccess({
   onBack,
   onDemoPreview,
+  onAccess,
 }: AstronautAccessProps) {
   const [astronautId, setAstronautId] = useState('')
   const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!astronautId.trim()) {
+    const code = astronautId.trim()
+
+    if (!code) {
       setMessage('Please enter an astronaut ID.')
       return
     }
 
-    setMessage(
-      'Profile verification is not connected yet. Backend integration is required.',
-    )
+    setIsLoading(true)
+    setMessage('Verifying astronaut ID...')
+
+    try {
+      const profile = await mainApiFetch<AstronautApiProfile>(
+        '/access',
+        {
+          method: 'POST',
+          body: { code },
+        },
+      )
+
+      onAccess(profile)
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? `Access failed: ${error.message}`
+          : 'Unable to verify this astronaut ID.',
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -118,12 +144,17 @@ export function AstronautAccess({
               setAstronautId(event.target.value)
               setMessage('')
             }}
-            placeholder="e.g. AST-001"
+            placeholder="e.g. AST-4K7Q2X"
             autoComplete="off"
+            disabled={isLoading}
           />
 
-          <button type="submit" className="welcome-enter-button access-submit">
-            <span>VERIFY ASTRONAUT ID</span>
+          <button
+            type="submit"
+            className="welcome-enter-button access-submit"
+            disabled={isLoading}
+          >
+            <span>{isLoading ? 'VERIFYING...' : 'VERIFY ASTRONAUT ID'}</span>
             <span className="welcome-button-arrow" aria-hidden="true">
               →
             </span>
@@ -142,7 +173,7 @@ export function AstronautAccess({
         )}
 
         {message && (
-          <p className="access-message" role="status">
+          <p className="access-message" role="status" aria-live="polite">
             {message}
           </p>
         )}
@@ -154,7 +185,7 @@ export function AstronautAccess({
 
       <footer className="welcome-footer">
         <span>SECURE MISSION ACCESS · PROTOTYPE</span>
-        <span>IDENTITY VERIFICATION NOT YET CONNECTED</span>
+        <span>ASTRONAUT ID VERIFICATION · PROTOTYPE</span>
       </footer>
     </main>
   )

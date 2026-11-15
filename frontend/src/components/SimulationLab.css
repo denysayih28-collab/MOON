@@ -1,0 +1,606 @@
+/* M.O.O.N. — Simulation Lab */
+
+.simulation-page {
+  display: grid;
+  gap: 28px;
+  min-width: 0;
+  padding-bottom: 12px;
+}
+
+.sim-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.sim-hero h1 {
+  margin: 11px 0 7px;
+}
+
+.sim-hero p {
+  max-width: 570px;
+  margin: 0;
+  color: #91a3ab;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.sim-environment-badge {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid #2d514b;
+  border-radius: var(--radius-md);
+  background: #142b29;
+  color: #9ce5d3;
+  font: 9px var(--font-mono);
+  letter-spacing: .6px;
+  white-space: nowrap;
+}
+
+.sim-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #4a4031;
+  border-radius: var(--radius-md);
+  background: linear-gradient(110deg, #29251e, #211f1b);
+}
+
+.sim-disclaimer-icon {
+  display: grid;
+  flex: 0 0 21px;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border: 1px solid #8a7048;
+  border-radius: 50%;
+  color: #e8bd83;
+  font: 11px var(--font-mono);
+}
+
+.sim-disclaimer p {
+  margin: 0;
+  color: #c4b49c;
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.sim-disclaimer strong {
+  color: #efd0a2;
+  font-weight: 600;
+}
+
+.sim-section {
+  min-width: 0;
+}
+
+.sim-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.sim-section-heading h2 {
+  margin: 6px 0 0;
+  font: 500 18px var(--font-display);
+  letter-spacing: -.4px;
+}
+
+.sim-count,
+.sim-selected-label {
+  color: var(--muted);
+  font: 9px var(--font-mono);
+  letter-spacing: .8px;
+  white-space: nowrap;
+}
+
+.sim-scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sim-scenario-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 172px;
+  padding: 17px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, #14232c, #101a21);
+  color: var(--text);
+  text-align: left;
+  transition: border-color .2s ease, transform .2s ease,
+    background .2s ease, box-shadow .2s ease;
+}
+
+.sim-scenario-card:hover {
+  transform: translateY(-2px);
+  border-color: #45615f;
+  background: linear-gradient(145deg, #172a32, #111e25);
+}
+
+.sim-scenario-card.is-selected {
+  border-color: #55bda8;
+  background: linear-gradient(145deg, #19342f, #11232a);
+  box-shadow: inset 0 0 0 1px #55d6bc18, 0 8px 25px #00000018;
+}
+
+.sim-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sim-category {
+  color: #8fa8ad;
+  font: 9px var(--font-mono);
+  letter-spacing: .4px;
+}
+
+.sim-card-arrow {
+  color: #75928f;
+  font-size: 15px;
+}
+
+.sim-scenario-card h3 {
+  margin: 17px 0 7px;
+  font: 600 16px var(--font-display);
+  letter-spacing: -.3px;
+}
+
+.sim-scenario-card > p {
+  max-width: 390px;
+  margin: 0 0 17px;
+  color: #91a3ab;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.sim-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #2a3b43;
+  color: #81969e;
+  font: 8px var(--font-mono);
+  letter-spacing: .5px;
+}
+
+.accent-mint.is-selected { border-color: #55bda8; }
+.accent-blue.is-selected { border-color: #6aa8d1; }
+.accent-violet.is-selected { border-color: #9a83d4; }
+.accent-orange.is-selected { border-color: #d59b70; }
+
+.sim-workspace,
+.sim-results-section {
+  min-width: 0;
+}
+
+.sim-overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.sim-context-panel,
+.sim-metrics-panel {
+  padding: 19px;
+}
+
+.sim-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #9aafb5;
+  font: 9px var(--font-mono);
+  letter-spacing: .8px;
+}
+
+.sim-panel-icon {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid #37675e;
+  border-radius: var(--radius-sm);
+  background: #193a37;
+  color: var(--mint);
+  font-size: 15px;
+}
+
+.sim-context-panel > h3 {
+  margin: 21px 0 8px;
+  font: 600 20px var(--font-display);
+  letter-spacing: -.5px;
+}
+
+.sim-context-description {
+  margin: 0;
+  color: #9aabb2;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.sim-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.sim-tag-list span {
+  padding: 6px 8px;
+  border: 1px solid #30434b;
+  border-radius: var(--radius-sm);
+  background: #17252d;
+  color: #a7bbc0;
+  font: 9px var(--font-mono);
+}
+
+.sim-context-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 23px;
+  padding: 15px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.sim-context-meta > div {
+  display: grid;
+  gap: 7px;
+}
+
+.sim-context-meta span {
+  color: var(--muted);
+  font: 8px var(--font-mono);
+  letter-spacing: .7px;
+  text-transform: uppercase;
+}
+
+.sim-context-meta strong {
+  color: #dce9e9;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.sim-run-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 19px;
+  padding: 12px 15px;
+  border: 1px solid #438d7d;
+  border-radius: var(--radius-md);
+  background: linear-gradient(110deg, #20564c, #193e3b);
+  color: #c8f7eb;
+  font-size: 11px;
+  font-weight: 600;
+  transition: background .18s ease, border-color .18s ease,
+    transform .18s ease;
+}
+
+.sim-run-button:hover {
+  transform: translateY(-1px);
+  border-color: #6de2c6;
+  background: linear-gradient(110deg, #286b5e, #205049);
+}
+
+.sim-run-button:active {
+  transform: translateY(0);
+}
+
+.sim-run-note {
+  margin: 10px 0 0;
+  color: #71858e;
+  font: 8px var(--font-mono);
+  text-align: center;
+}
+
+.sim-indicator-count {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-left: auto;
+  border: 1px solid #30434b;
+  border-radius: var(--radius-sm);
+  color: #b1c4c9;
+  font-size: 9px;
+}
+
+.sim-metric-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.sim-metric-card {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid #293b44;
+  border-radius: var(--radius-md);
+  background: #121f27;
+}
+
+.sim-metric-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #a9bbc0;
+  font-size: 10px;
+}
+
+.sim-metric-status {
+  padding: 4px 7px;
+  border: 1px solid;
+  border-radius: 20px;
+  font: 8px var(--font-mono);
+  white-space: nowrap;
+}
+
+.metric-status-normal {
+  border-color: #315c50;
+  background: #1b342e;
+  color: #8bd6b9;
+}
+
+.metric-status-watch {
+  border-color: #68563a;
+  background: #302a20;
+  color: #e2bb83;
+}
+
+.metric-status-outside {
+  border-color: #71463e;
+  background: #362421;
+  color: #e7a18f;
+}
+
+.sim-metric-value {
+  display: block;
+  margin-top: 11px;
+  color: #e7f1f1;
+  font: 600 21px var(--font-display);
+  letter-spacing: -.4px;
+}
+
+.sim-metric-baseline {
+  margin-top: 5px;
+  color: #82969e;
+  font-size: 9px;
+}
+
+.sim-metric-card > p {
+  margin: 9px 0 0;
+  color: #82969e;
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.sim-result-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #81949c;
+  font: 8px var(--font-mono);
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+
+.sim-result-state .tiny-dot {
+  background: #81949c;
+  box-shadow: none;
+}
+
+.sim-result-state.is-complete {
+  color: #8bd6b9;
+}
+
+.sim-result-state.is-complete .tiny-dot {
+  background: var(--mint);
+  box-shadow: 0 0 9px #55d6bc66;
+}
+
+.sim-chart-panel {
+  padding: 19px;
+}
+
+.sim-chart-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.sim-chart-heading h3 {
+  margin: 0;
+  font: 600 15px var(--font-display);
+}
+
+.sim-chart-heading p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.sim-chart-current {
+  display: grid;
+  gap: 5px;
+  text-align: right;
+}
+
+.sim-chart-current strong {
+  color: var(--mint);
+  font: 600 17px var(--font-display);
+}
+
+.sim-chart-current span {
+  color: var(--muted);
+  font: 8px var(--font-mono);
+  letter-spacing: .5px;
+}
+
+.sim-chart {
+  width: 100%;
+  height: 245px;
+  margin-top: 20px;
+}
+
+.sim-chart-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 13px;
+  border-top: 1px solid var(--border);
+  color: #81949c;
+  font-size: 9px;
+}
+
+.sim-chart-caption > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b6c7cb;
+}
+
+.sim-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mint);
+}
+
+.sim-bottom-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 12px;
+  color: #81949c;
+}
+
+.sim-bottom-note > span {
+  color: #8bb9b2;
+  font-size: 13px;
+}
+
+.sim-bottom-note p {
+  margin: 0;
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+/* Responsive layout */
+
+@media (max-width: 1100px) {
+  .sim-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .simulation-page {
+    gap: 23px;
+  }
+
+  .sim-hero {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .sim-environment-badge {
+    font-size: 8px;
+  }
+
+  .sim-scenario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sim-scenario-card {
+    min-height: 155px;
+  }
+
+  .sim-section-heading {
+    align-items: flex-start;
+  }
+
+  .sim-selected-label,
+  .sim-count {
+    padding-top: 3px;
+    font-size: 8px;
+  }
+
+  .sim-context-panel,
+  .sim-metrics-panel,
+  .sim-chart-panel {
+    padding: 15px;
+  }
+
+  .sim-chart {
+    height: 210px;
+  }
+
+  .sim-chart-caption {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sim-chart-heading {
+    align-items: flex-start;
+  }
+
+  .sim-chart-current strong {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .sim-disclaimer {
+    padding: 12px;
+  }
+
+  .sim-context-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .sim-metric-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sim-chart-heading {
+    flex-direction: column;
+  }
+
+  .sim-chart-current {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sim-scenario-card,
+  .sim-run-button {
+    transition: none;
+  }
+}
